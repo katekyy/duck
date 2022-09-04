@@ -17,7 +17,7 @@ It can be used to countdown a start of a livestream, new year or anything else.
 - [bash]
 
 ## Installation
-You need to type only one command 
+You need to type only one command.
 ```console
 $ git clone https://github.com/katekyy/duck
 $ cd duck
