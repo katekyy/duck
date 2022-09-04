@@ -7,7 +7,7 @@
 </div>
 
 # Timer written in Rust
-It can be used to countdown a start of a stream, new year or anything else.
+It can be used to countdown a start of a livestream, new year or anything else.
 
 ## Prerequisites
 
