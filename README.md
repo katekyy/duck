@@ -19,6 +19,8 @@ It can be used to countdown a start of a stream, new year or anything else.
 ## Installation
 You need to type only one command 
 ```console
+$ git clone https://github.com/katekyy/duck
+$ cd duck
 $ make
 ```
 
