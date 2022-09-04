@@ -2,6 +2,7 @@
   <p>
     <a href="#timer-written-in-rust"><img src="https://img.shields.io/github/license/katekyy/duck?color=%2388FF&label=License&style=flat-square"/></a>
     <a href="#timer-written-in-rust"><img src="https://img.shields.io/github/commit-activity/w/katekyy/duck?color=%2388FF&style=flat-square"/></a>
+    <img src="/img.png"/>
   </p>
 </div>
 
