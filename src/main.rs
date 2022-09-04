@@ -11,7 +11,7 @@ use termion::{color, style, terminal_size};
 
 fn main() {
     let args: Vec<_> = env::args().collect();
-    let (w, h) = termion::terminal_size().unwrap();
+    let (_, h) = termion::terminal_size().unwrap();
 
     if args.len()-1 < 2 {
         println!("{}{}err{}: Supplied {:?}/2 arguments!", color::Fg(color::Red), style::Bold, color::Fg(color::White), args.len()-1);
@@ -64,18 +64,20 @@ fn start_countdown() {
 
     thread::spawn(|| {
         let args: Vec<_> = env::args().collect();
-        let (w, h) = termion::terminal_size().unwrap();
+        let (_, h) = termion::terminal_size().unwrap();
 
         let raw: Vec<_> = args[2].split(':').collect();
         let mut sec: i32 = raw[2].parse().unwrap();
         let mut min: i32 = raw[1].parse().unwrap();
         let mut hrs: i32 = raw[0].parse().unwrap();
 
+        print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
+
         // Countdown loop
         let mut broke = false;
         while !broke {
-            print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
             thread::sleep(Duration::from_secs(1));
+            print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
 
             // Check if time has end or if someone is dumb and typed 00:00:00
             if sec == 0 && min == 0 && hrs == 0 {
@@ -90,7 +92,7 @@ fn start_countdown() {
                         sec += 60;
                     }
                 },
-                _ => sec -= 1
+                _ => { sec -= 1; print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s"); }
             }
             match min as i32 {
                 0 => {
