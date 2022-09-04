@@ -109,6 +109,16 @@ fn start_countdown() {
                 _ => {}
             }
         }  
+
+        while broke {
+            thread::sleep(Duration::from_secs(1));
+            attron(COLOR_PAIR(2));
+            print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());
+
+            thread::sleep(Duration::from_secs(1));
+            attron(COLOR_PAIR(3));
+            print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());
+        }
     });
 }
 
