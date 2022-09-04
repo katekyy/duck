@@ -45,6 +45,7 @@ fn main() {
 
     start_countdown();
 
+    // Wait for Q key
     let mut quit = false;
     while !quit {
         let key = getch();
@@ -101,7 +102,8 @@ fn start_countdown() {
                         }
 
                         hrs -= 1;
-                        min += 60;
+                        min += 59;
+                        sec += 60;
                     }
                 },
                 _ => {}
@@ -111,10 +113,16 @@ fn start_countdown() {
 }
 
 fn print_centered(start_row: i32, text: String) {
+    // Calculate position
     let (w, _) = terminal_size().unwrap();
     let half_len = UnicodeSegmentation::graphemes(&text as &str, true).count() / 2;
     let adjusted_col = w/2 - half_len as u16;
 
+    // Clear line that will be printed a text
+    mv(start_row, 0);
+    clrtoeol();
+
+    // Print text and refresh
     mvprintw(start_row, adjusted_col as i32, &text as &str);
     refresh();
 }
