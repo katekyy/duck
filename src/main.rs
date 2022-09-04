@@ -92,8 +92,10 @@ fn start_countdown() {
                         sec += 60;
                     }
                 },
-                _ => { sec -= 1; print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s"); }
+                _ => sec -= 1
             }
+            print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
+
             match min as i32 {
                 0 => {
                     if sec == 0 && min == 0 {
