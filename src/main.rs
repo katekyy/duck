@@ -15,18 +15,33 @@ fn main() {
 
     if args.len()-1 < 2 {
         println!("{}{}err{}: Supplied {:?}/2 arguments!", color::Fg(color::Red), style::Bold, color::Fg(color::White), args.len()-1);
-        println!("{}{} | {}  'timer [message] [00:00:00]'", color::Fg(color::Red), style::Bold, color::Fg(color::White));
+        println!("{}{} | {}  'timer [message] [hh:mm:ss]'", color::Fg(color::Red), style::Bold, color::Fg(color::White));
         exit(1);
     }
 
     let re = Regex::new(r"^\d{2}:\d{2}:\d{2}$").unwrap();
-    assert!(re.is_match(&args[2]));
+    if !re.is_match(&args[2]) {
+        println!("{}{}err{}: Incorrect time formatting '{}'", color::Fg(color::Red), style::Bold, color::Fg(color::White), args[2]);
+        println!("{}{} | {}  'timer [message] [hh:mm:ss]'", color::Fg(color::Red), style::Bold, color::Fg(color::White));
+        exit(1);
+    }
 
     initscr();
     noecho();
+    curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
-    print_centered(((h/2)-4).try_into().unwrap(), args[1].clone());
-    print_centered((h-(h/8)).try_into().unwrap(), "press 'q' to exit".to_string());
+    start_color();
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(2, COLOR_WHITE, COLOR_BLACK);
+    init_pair(3, COLOR_RED, COLOR_BLACK);
+
+    attron(A_BOLD());
+
+    attron(COLOR_PAIR(2));
+    print_centered((h-(h/8)) as i32, "press 'q' to exit".to_string());
+
+    attron(COLOR_PAIR(1));
+    print_centered(((h/2)-4) as i32, args[1].clone());
 
     start_countdown();
 
@@ -56,21 +71,17 @@ fn start_countdown() {
         let mut hrs: i32 = raw[0].parse().unwrap();
 
         // Countdown loop
-        
         let mut broke = false;
         while !broke {
-            print_centered(((h/2)-2).try_into().unwrap(), hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
+            print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
             thread::sleep(Duration::from_secs(1));
 
             // Check if time has end or if someone is dumb and typed 00:00:00
-
             if sec == 0 && min == 0 && hrs == 0 {
-                print_centered(((h/2)-2).try_into().unwrap(), "0h 0m 0s".to_string());
                 broke = true;
             }
 
             // Countdown logic
-
             match sec as i32 {
                 0 => { 
                     if  min != 0 {
@@ -84,7 +95,8 @@ fn start_countdown() {
                 0 => {
                     if sec == 0 && min == 0 {
                         if hrs == 0 {
-                            print_centered(((h/2)-2).try_into().unwrap(), "0h 0m 0s".to_string());
+                            attron(COLOR_PAIR(3));
+                            print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());
                             broke = true;
                         }
 
@@ -99,7 +111,7 @@ fn start_countdown() {
 }
 
 fn print_centered(start_row: i32, text: String) {
-    let (w, h) = terminal_size().unwrap();
+    let (w, _) = terminal_size().unwrap();
     let half_len = UnicodeSegmentation::graphemes(&text as &str, true).count() / 2;
     let adjusted_col = w/2 - half_len as u16;
 
