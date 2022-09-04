@@ -14,14 +14,14 @@ fn main() {
     let (_, h) = termion::terminal_size().unwrap();
 
     if args.len()-1 < 2 {
-        println!("{}{}err{}: Supplied {:?}/2 arguments!", color::Fg(color::Red), style::Bold, color::Fg(color::White), args.len()-1);
+        println!("{}{}ERR{}: Supplied {:?}/2 arguments!", color::Fg(color::Red), style::Bold, color::Fg(color::White), args.len()-1);
         println!("{}{} | {}  'timer [message] [hh:mm:ss]'", color::Fg(color::Red), style::Bold, color::Fg(color::White));
         exit(1);
     }
 
     let re = Regex::new(r"^\d{2}:\d{2}:\d{2}$").unwrap();
     if !re.is_match(&args[2]) {
-        println!("{}{}err{}: Incorrect time formatting '{}'", color::Fg(color::Red), style::Bold, color::Fg(color::White), args[2]);
+        println!("{}{}ERR{}: Incorrect time formatting '{}'", color::Fg(color::Red), style::Bold, color::Fg(color::White), args[2]);
         println!("{}{} | {}  'timer [message] [hh:mm:ss]'", color::Fg(color::Red), style::Bold, color::Fg(color::White));
         exit(1);
     }
