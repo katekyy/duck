@@ -1,5 +1,6 @@
 use ncurses::*;
 
+use std::fmt::format;
 use std::{env, process::exit, io::BufRead};
 use std::{thread, time::Duration};
 
@@ -14,16 +15,12 @@ fn main() {
     let (_, h) = termion::terminal_size().unwrap();
 
     if args.len()-1 < 2 {
-        println!("{}{}ERR{}: Supplied {:?}/2 arguments!", color::Fg(color::Red), style::Bold, color::Fg(color::White), args.len()-1);
-        println!("{}{} | {}  'timer [message] [hh:mm:ss]'", color::Fg(color::Red), style::Bold, color::Fg(color::White));
-        exit(1);
+        throw_err(format!("Supplied {}/2 arguments!", args.len()-1), format!("'timer' [message] [hh:mm:ss]"));
     }
 
     let re = Regex::new(r"^\d{2}:\d{2}:\d{2}$").unwrap();
     if !re.is_match(&args[2]) {
-        println!("{}{}ERR{}: Incorrect time formatting '{}'", color::Fg(color::Red), style::Bold, color::Fg(color::White), args[2]);
-        println!("{}{} | {}  'timer [message] [hh:mm:ss]'", color::Fg(color::Red), style::Bold, color::Fg(color::White));
-        exit(1);
+        throw_err(format!("Incorrect time formatting: {}", args[2]), format!("'timer [message] [hh:mm:ss]'"));
     }
 
     initscr();
@@ -123,6 +120,12 @@ fn start_countdown() {
             }
         }
     });
+}
+
+fn throw_err(title: String, trace: String) {
+    println!("{}{}ERR{}: {}", color::Fg(color::Red), style::Bold, color::Fg(color::White), title);
+    println!("{}{} | {}  {}", color::Fg(color::Red), style::Bold, color::Fg(color::White), trace);
+    exit(1);
 }
 
 fn print_centered(start_row: i32, text: String) {
