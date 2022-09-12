@@ -114,14 +114,13 @@ fn start_countdown() {
             }
         }  
 
+        // Blinker
         while broke {
-            thread::sleep(Duration::from_secs(1));
-            attron(COLOR_PAIR(2));
-            print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());
-
-            thread::sleep(Duration::from_secs(1));
-            attron(COLOR_PAIR(3));
-            print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());
+            for i in 2..4 {
+                thread::sleep(Duration::from_secs(1));
+                attron(COLOR_PAIR(i));
+                print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());    
+            }
         }
     });
 }
