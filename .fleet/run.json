@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "test",
+            "program": "make",
+            "args": ["test"],
+        },
+    ]
+}

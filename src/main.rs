@@ -1,7 +1,6 @@
 use ncurses::*;
 
-use std::fmt::format;
-use std::{env, process::exit, io::BufRead};
+use std::{env, process::exit};
 use std::{thread, time::Duration};
 
 use unicode_segmentation::UnicodeSegmentation;
