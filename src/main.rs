@@ -3,23 +3,28 @@ use ncurses::*;
 use std::{env, process::exit};
 use std::{thread, time::Duration};
 
-use unicode_segmentation::UnicodeSegmentation;
 use regex::Regex;
+use unicode_segmentation::UnicodeSegmentation;
 
 use termion::{color, style, terminal_size};
-
 
 fn main() {
     let args: Vec<_> = env::args().collect();
     let (_, h) = termion::terminal_size().unwrap();
 
-    if args.len()-1 < 2 {
-        throw_err(format!("Supplied {}/2 arguments!", args.len()-1), format!("'timer' [message] [hh:mm:ss]"));
+    if args.len() - 1 < 2 {
+        throw_err(
+            format!("Supplied {}/2 arguments!", args.len() - 1),
+            format!("'timer' [message] [hh:mm:ss]"),
+        );
     }
 
     let re = Regex::new(r"^\d{2}:\d{2}:\d{2}$").unwrap();
     if !re.is_match(&args[2]) {
-        throw_err(format!("Incorrect time formatting: {}", args[2]), format!("'timer [message] [hh:mm:ss]'"));
+        throw_err(
+            format!("Incorrect time formatting: {}", args[2]),
+            format!("'timer [message] [hh:mm:ss]'"),
+        );
     }
 
     initscr();
@@ -34,10 +39,10 @@ fn main() {
     attron(A_BOLD());
 
     attron(COLOR_PAIR(2));
-    print_centered((h-(h/8)) as i32, "press 'q' to exit".to_string());
+    print_centered((h - (h / 8)) as i32, "press 'q' to exit".to_string());
 
     attron(COLOR_PAIR(1));
-    print_centered(((h/2)-4) as i32, args[1].clone());
+    print_centered(((h / 2) - 4) as i32, args[1].clone());
 
     start_countdown();
 
@@ -48,7 +53,7 @@ fn main() {
 
         match key as u8 as char {
             'q' | 'Q' => quit = true,
-             _  => {}
+            _ => {}
         }
     }
 
@@ -67,37 +72,46 @@ fn start_countdown() {
         let mut min: i32 = raw[1].parse().unwrap();
         let mut hrs: i32 = raw[0].parse().unwrap();
 
-        print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
+        print_centered(
+            ((h / 2) - 2) as i32,
+            hrs.to_string() + "h " + &min.to_string() + "m " + &sec.to_string() + "s",
+        );
 
         // Countdown loop
         let mut broke = false;
         while !broke {
             thread::sleep(Duration::from_secs(1));
-            print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
+            print_centered(
+                ((h / 2) - 2) as i32,
+                hrs.to_string() + "h " + &min.to_string() + "m " + &sec.to_string() + "s",
+            );
 
             // Check if time has end or if someone is dumb and typed 00:00:00
-            if sec == 0 && min == 0 && hrs == 0 {
+            if sec + min + hrs == 0 {
                 broke = true;
             }
 
             // Countdown logic
             match sec as i32 {
-                0 => { 
-                    if  min != 0 {
-                        min -= 1; 
+                0 => {
+                    if min != 0 {
+                        min -= 1;
                         sec += 60;
                     }
-                },
-                _ => sec -= 1
+                }
+                _ => sec -= 1,
             }
-            print_centered(((h/2)-2) as i32, hrs.to_string()+"h "+&min.to_string()+"m "+ &sec.to_string()+"s");
+            print_centered(
+                ((h / 2) - 2) as i32,
+                hrs.to_string() + "h " + &min.to_string() + "m " + &sec.to_string() + "s",
+            );
 
             match min as i32 {
                 0 => {
                     if sec == 0 && min == 0 {
                         if hrs == 0 {
                             attron(COLOR_PAIR(3));
-                            print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());
+                            print_centered(((h / 2) - 2) as i32, "0h 0m 0s".to_string());
                             broke = true;
                         }
 
@@ -105,25 +119,37 @@ fn start_countdown() {
                         min += 59;
                         sec += 60;
                     }
-                },
+                }
                 _ => {}
             }
-        }  
+        }
 
         // Blinker
         while broke {
             for i in 2..4 {
                 thread::sleep(Duration::from_secs(1));
                 attron(COLOR_PAIR(i));
-                print_centered(((h/2)-2) as i32, "0h 0m 0s".to_string());    
+                print_centered(((h / 2) - 2) as i32, "0h 0m 0s".to_string());
             }
         }
     });
 }
 
 fn throw_err(title: String, trace: String) {
-    println!("{}{}ERR{}: {}", color::Fg(color::Red), style::Bold, color::Fg(color::White), title);
-    println!("{}{} | {}  {}", color::Fg(color::Red), style::Bold, color::Fg(color::White), trace);
+    println!(
+        "{}{}ERR{}: {}",
+        color::Fg(color::Red),
+        style::Bold,
+        color::Fg(color::White),
+        title
+    );
+    println!(
+        "{}{} | {}  {}",
+        color::Fg(color::Red),
+        style::Bold,
+        color::Fg(color::White),
+        trace
+    );
     exit(1);
 }
 
@@ -131,7 +157,7 @@ fn print_centered(start_row: i32, text: String) {
     // Calculate position
     let (w, _) = terminal_size().unwrap();
     let half_len = UnicodeSegmentation::graphemes(&text as &str, true).count() / 2;
-    let adjusted_col = w/2 - half_len as u16;
+    let adjusted_col = w / 2 - half_len as u16;
 
     // Clear line that will be printed a text
     mv(start_row, 0);
