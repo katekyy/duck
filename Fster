@@ -2,8 +2,8 @@
 	"name": "duck",
 	"id": "duck-timer",
 	"version": "0.1.0",
-	"authors": ["katekyy"]
+	"authors": ["katekyy"],
 	"scripts": {
-		"linux": ["linux.sh"]
-	}
+		"linux": ["linux.sh"],
+	},
 }
