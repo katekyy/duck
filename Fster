@@ -1,6 +1,9 @@
 {
 	"name": "duck",
-	"id": "duck",
+	"id": "duck-timer",
 	"version": "0.1.0",
 	"authors": ["katekyy"]
+	"scripts": {
+		"linux": ["linux.sh"]
+	}
 }
