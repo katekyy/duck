@@ -7,7 +7,7 @@ install-termux: build
 	cp $(TARGET)/$(PROG) /data/data/com.termux/files/usr/bin/$(PROG)
 
 install: build
-	sudo cp ./target/release/$(PROG) /bin/$(PROG)
+	sudo cp $(TARGET)/$(PROG) /bin/$(PROG)
 
 build:
 	cargo build --release
